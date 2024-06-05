@@ -1,4 +1,8 @@
-import { ILoginData, IRegisterData } from "@/types/account.interface";
+import {
+  ILoginData,
+  IRegisterData,
+  IRegisterResponse,
+} from "@/types/account.interface";
 import axios, { AxiosRequestConfig } from "axios";
 
 export async function register(registerProps: IRegisterData) {
@@ -11,7 +15,7 @@ export async function register(registerProps: IRegisterData) {
       "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
     },
   };
-  return axios.post(
+  const res: IRegisterResponse = await axios.post(
     url,
     {
       email: registerProps.email,
@@ -20,6 +24,12 @@ export async function register(registerProps: IRegisterData) {
     },
     axiosConfig
   );
+
+  if (res.access_token) {
+    window.localStorage.setItem("token", res.access_token);
+    return true;
+  }
+  return res.message;
 }
 
 export async function login(loginProps: ILoginData) {
