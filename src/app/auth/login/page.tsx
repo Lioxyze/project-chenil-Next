@@ -13,6 +13,7 @@ import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { login } from "@/Services/account";
 
 function Copyright(props: any) {
   return (
@@ -43,6 +44,13 @@ export default function SignInSide() {
       email: data.get("email"),
       password: data.get("password"),
     });
+    const email = (data.get("email") as string) || null;
+    const password = (data.get("password") as string) || null;
+    if (!email || !password) return;
+    login({
+      email: email,
+      password: password,
+    }).then((res) => console.log(res));
   };
 
   return (

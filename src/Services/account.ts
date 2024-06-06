@@ -1,12 +1,14 @@
 import {
   ILoginData,
+  ILoginResponse,
   IRegisterData,
   IRegisterResponse,
 } from "@/types/account.interface";
 import axios, { AxiosRequestConfig } from "axios";
 
 export async function register(registerProps: IRegisterData) {
-  let url = `${process.env.NEXT_PUBLIC_API_URL}auth/signup`;
+  console.log(process.env.NEXT_PUBLIC_API_URL);
+  let url = `https://kennel-api-b46f3e223574.herokuapp.com/auth/signup`;
 
   let axiosConfig: AxiosRequestConfig = {
     headers: {
@@ -15,7 +17,7 @@ export async function register(registerProps: IRegisterData) {
       "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
     },
   };
-  const res: IRegisterResponse = await axios.post(
+  const res = await axios.post(
     url,
     {
       email: registerProps.email,
@@ -24,16 +26,17 @@ export async function register(registerProps: IRegisterData) {
     },
     axiosConfig
   );
-
-  if (res.access_token) {
-    window.localStorage.setItem("token", res.access_token);
+  const data: IRegisterResponse = res.data;
+  console.log(data);
+  if (data.access_token) {
+    window.localStorage.setItem("token", data.access_token);
     return true;
   }
-  return res.message;
+  return data.message;
 }
 
 export async function login(loginProps: ILoginData) {
-  let url = `${process.env.NEXT_PUBLIC_API_URL}auth/signin`;
+  let url = `https://kennel-api-b46f3e223574.herokuapp.com/auth/signin`;
 
   let axiosConfig: AxiosRequestConfig = {
     headers: {
@@ -42,7 +45,7 @@ export async function login(loginProps: ILoginData) {
       "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
     },
   };
-  return axios.post(
+  const res = await axios.post(
     url,
     {
       email: loginProps.email,
@@ -50,4 +53,11 @@ export async function login(loginProps: ILoginData) {
     },
     axiosConfig
   );
+  const data: ILoginResponse = res.data;
+  console.log(data);
+  if (data.access_token) {
+    window.localStorage.setItem("token", data.access_token);
+    return true;
+  }
+  return data.message;
 }
